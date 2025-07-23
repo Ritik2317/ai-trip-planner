@@ -1,12 +1,25 @@
-# React + Vite
+# 🌍 AI Trip Planner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A smart AI-powered trip planning web app that generates personalized travel itineraries based on user preferences using Google Gemini AI. Built with React, Vite, and Firebase.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 🔐 Google Login with Firebase Authentication
+- 🧠 AI-generated travel plans using Gemini 1.5 Pro
+- 🏨 Hotel listings with name, address, image, price, rating, and location
+- 🗺️ Daily itinerary suggestions with best time to visit, places info, geo-coordinates, ticket pricing
+- 📁 Firebase Firestore integration for storing user-specific trip history
+- ⚡ Built with Vite for fast development experience
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🚀 Tech Stack
+
+| Frontend     | Backend / Auth     | AI / ML      |
+| ------------ | ------------------ | ------------ |
+| React + Vite | Firebase Auth      | Gemini AI    |
+| Tailwind CSS | Firebase Firestore | JSON Parsing |
+
+---
