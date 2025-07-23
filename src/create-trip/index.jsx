@@ -5,11 +5,23 @@ import { AI_PROMPT, SelectBudgetOptions, SelectTravelesList } from '../constants
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import { generateTripPlan } from '../service/ai-model';
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { FaGoogle } from "react-icons/fa";
+import { LogIn } from 'lucide-react';
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 function CreateTrip() {
   const [place,setPlace] = useState();
   const [formData,setFormData] = useState([]);
   const [tripResult, setTripResult] = useState(null);
+  const [openDialog,setOpenDialog] = useState(false);
   const handleInputChange = (name,value)=>{
     setFormData({
       ...formData,
@@ -19,8 +31,16 @@ function CreateTrip() {
   useEffect(() => {
     console.log(formData);
   },[formData])
-
+  const login = useGoogleLogin({
+    onSuccess:(codeResp)=>getUserProfile(codeResp),
+    onError:(error)=>console.log(error)
+  })
   const OnGenerateTrip = async () => {
+  const user = localStorage.getItem('user');
+  if(!user){
+    setOpenDialog(true);
+    return;
+  }
   if (!formData.location || !formData.budget || !formData.noOfDays || !formData.traveller) {
     toast("Please enter all details.");
     return;
@@ -31,7 +51,6 @@ function CreateTrip() {
     .replace('{noOfDays}', formData?.noOfDays)
     .replace('{traveller}', formData?.traveller)
     .replace('{budget}', formData?.budget);
-    console.log(FINAL_PROMPT);
   try {
     toast("Generating your itinerary...");
     const tripData = await generateTripPlan(FINAL_PROMPT);
@@ -44,6 +63,21 @@ function CreateTrip() {
   }
   };
 
+  const getUserProfile = (tokenInfo) => {
+  axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`, {
+    headers: {
+      Authorization: `Bearer ${tokenInfo?.access_token}`,
+      Accept: 'application/json'
+    }
+    }).then((resp) => {
+      console.log(resp.data);
+      localStorage.setItem('user',JSON.stringify(resp.data));
+      OnGenerateTrip();
+      setOpenDialog(false);
+    }).catch((err) => {
+      console.error("Failed to fetch user profile:", err);
+    });
+  };
 
   return (
   <div className="w-screen min-h-screen px-4 py-10 bg-white">
@@ -138,6 +172,34 @@ function CreateTrip() {
           Generate Trip
         </Button>
       </div>
+      <Dialog open={openDialog}>
+        <DialogContent className="max-w-sm rounded-2xl p-6 shadow-lg bg-white dark:bg-zinc-900 text-center space-y-4">
+          <DialogHeader>
+            <DialogDescription>
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className="mx-auto h-14 w-14 rounded-full shadow-sm"
+              />
+              <h2 className="text-xl font-semibold mt-4 text-zinc-800 dark:text-zinc-100">
+                Sign in with Google
+              </h2>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                Sign in to the app using Google authentication to continue.
+              </p>
+
+              <Button
+                onClick={login}
+                className="mt-6 w-full bg-black hover:bg-zinc-800 text-white font-medium py-2 px-4 rounded-xl transition hover:cursor-pointer"
+              >
+                Sign in with Google<FaGoogle />
+              </Button>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
+
     </div>
   </div>
   )
