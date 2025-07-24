@@ -229,7 +229,6 @@ function CreateTrip() {
             </DialogHeader>
           </DialogContent>
         </Dialog>
-        <Footer/>
       </div>
     </div>
   );

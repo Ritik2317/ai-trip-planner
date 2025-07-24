@@ -15,7 +15,6 @@ function Hero() {
         <Link to={'/create-trip'}>
             <Button variant='black'>Get Started</Button>
         </Link>
-        <Footer/>
     </div>
   )
 }
