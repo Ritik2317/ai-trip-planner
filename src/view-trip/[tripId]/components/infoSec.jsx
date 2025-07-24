@@ -12,7 +12,7 @@ function Info({trip}) {
         };
         try {
             const result = await GetPlaceDetails(data); // 👈 pass `data` here
-            console.log(result.data.places[0].photos[3]);
+            console.log(result.data.places[0].photos[2]);
             const PhotoURL = photoRefURL.replace('NAME',result.data.places[0].photos[2].name);
             setPhotoURL(PhotoURL);
         } catch (err) {
