@@ -14,14 +14,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { FaGoogle } from "react-icons/fa";
-import { LogIn } from 'lucide-react';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import { doc, setDoc } from "firebase/firestore"; 
+import { db } from '@/service/firebaseConfig';
+import { AiOutlineLoading } from "react-icons/ai";
 function CreateTrip() {
   const [place,setPlace] = useState();
   const [formData,setFormData] = useState([]);
   const [tripResult, setTripResult] = useState(null);
   const [openDialog,setOpenDialog] = useState(false);
+  const [loading,setLoading] = useState(false);
   const handleInputChange = (name,value)=>{
     setFormData({
       ...formData,
@@ -31,10 +34,11 @@ function CreateTrip() {
   useEffect(() => {
     console.log(formData);
   },[formData])
-  const login = useGoogleLogin({
+  const login = useGoogleLogin({  
     onSuccess:(codeResp)=>getUserProfile(codeResp),
     onError:(error)=>console.log(error)
   })
+
   const OnGenerateTrip = async () => {
   const user = localStorage.getItem('user');
   if(!user){
@@ -45,7 +49,7 @@ function CreateTrip() {
     toast("Please enter all details.");
     return;
   }
-
+  setLoading(true);
   const FINAL_PROMPT = AI_PROMPT
     .replace('{location}', formData?.location?.label)
     .replace('{noOfDays}', formData?.noOfDays)
@@ -55,13 +59,29 @@ function CreateTrip() {
     toast("Generating your itinerary...");
     const tripData = await generateTripPlan(FINAL_PROMPT);
     setTripResult(tripData);
+    setLoading(false);
     toast.success("Trip plan generated successfully!");
+    SaveAITrip(tripData);
     console.log("Trip Plan:", tripData);
   } catch (err) {
+    setLoading(false);
     toast.error("❌ Failed to generate trip. Try again.");
     console.error(err);
   }
   };
+
+  const SaveAITrip = async(tripData)=>{
+    setLoading(true);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const docID = Date.now().toString();
+    await setDoc(doc(db, "AITrips", docID), {
+    userSelection:formData,
+    tripData:tripData,
+    userEmail:user?.email,
+    id:docID
+  });
+  setLoading(false);
+  }
 
   const getUserProfile = (tokenInfo) => {
   axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`, {
@@ -167,9 +187,14 @@ function CreateTrip() {
 
       {/* Submit Button */}
       <div className="text-center">
-        <Button className="bg-black text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-neutral-900 active:bg-neutral-800 transition-transform transform hover:-translate-y-1"
+        <Button className="bg-black text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-neutral-900 active:bg-neutral-800 transition-transform transform hover:-translate-y-1 hover:cursor-pointer"
+          disabled = {loading}
           onClick = {OnGenerateTrip}>
+          {loading?
+          <AiOutlineLoading className='h-7 w-7 animate-spin' />:
+          <>
           Generate Trip
+          </>}
         </Button>
       </div>
       <Dialog open={openDialog}>
