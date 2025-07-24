@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '../ui/button'
 import { Link } from 'react-router'
+import Footer from '@/view-trip/[tripId]/components/footer'
 
 function Hero() {
   return (
@@ -14,6 +15,7 @@ function Hero() {
         <Link to={'/create-trip'}>
             <Button variant='black'>Get Started</Button>
         </Link>
+        <Footer/>
     </div>
   )
 }
