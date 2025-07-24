@@ -1,12 +1,30 @@
-import React from 'react'
+import { GetPlaceDetails, photoRefURL } from '@/service/GlobalApi'
+import React, { useEffect, useState } from 'react'
 
 function Info({trip}) {
+    const [photoURL,setPhotoURL] = useState();
+    useEffect(()=>{
+        trip&&getPlacePhoto();
+    },[])
+    const getPlacePhoto = async () => {
+        const data = {
+            textQuery: trip?.userSelection?.location?.label,
+        };
+        try {
+            const result = await GetPlaceDetails(data); // 👈 pass `data` here
+            console.log(result.data.places[0].photos[3]);
+            const PhotoURL = photoRefURL.replace('NAME',result.data.places[0].photos[2].name);
+            setPhotoURL(PhotoURL);
+        } catch (err) {
+            console.error("Axios Error:", err.response?.data || err.message);
+        }
+    };
   return (
     <div className="w-full bg-white text-black p-4 rounded-xl shadow-md border border-gray-200">
         <img
-            src="/placeholder.jpeg"
+            src={photoURL?photoURL:'/placeholder.jpeg'}
             alt="Trip"
-            className="w-full h-[300px] object-cover rounded-lg mb-4"
+            className="w-full h-[300px] object-contain rounded-lg mb-4"
         />
 
         <div className="space-y-4">
