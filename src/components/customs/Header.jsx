@@ -55,6 +55,9 @@ function Header() {
         <div>
             {user? 
               <div className="flex items-center gap-4">
+                <a href='/create-trip'>
+                <Button className='cursor-pointer'>Create Another Trip</Button>
+                </a>
                 <a href='/my-trips'>
                 <Button className='cursor-pointer'>My Trips</Button>
                 </a>

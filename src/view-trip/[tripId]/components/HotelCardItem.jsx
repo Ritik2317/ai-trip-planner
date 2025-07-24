@@ -19,7 +19,7 @@ function HotelCardItem({hotel}) {
             } catch (err) {
                 console.error("Axios Error:", err.response?.data || err.message);
             }
-    };
+        };
   return (
     <Link to={'https://www.google.com/maps/search/?api=1&query='+hotel?.hotelName+","+hotel?.hotelAddress} target='blank'>
           <div
