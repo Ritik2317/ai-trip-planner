@@ -55,6 +55,9 @@ function Header() {
         <div>
             {user? 
               <div className="flex items-center gap-4">
+                <a href='/'>
+                <Button className='cursor-pointer'>Go to Home</Button>
+                </a>
                 <a href='/create-trip'>
                 <Button className='cursor-pointer'>Create Another Trip</Button>
                 </a>
@@ -66,7 +69,7 @@ function Header() {
                     <img
                       src={user?.picture}
                       alt="User"
-                      className="w-10 h-10 rounded-full object-cover border"
+                      className="w-10 h-10 rounded-full object-cover border cursor-pointer"
                       referrerPolicy="no-referrer"
                       onError={(e) => {
                         console.error("Failed to load image:", e.target.src);
@@ -75,15 +78,23 @@ function Header() {
                     />
                 </PopoverTrigger>
                   <PopoverContent>
+                    <a href='/'>
                     <h2 className='cursor-pointer'onClick={()=>{
                       googleLogout();
                       localStorage.clear();
                       window.location.reload();
                     }}>Logout</h2>
+                    </a>
                   </PopoverContent>
                 </Popover>
               </div>:
-              <Button variant='black' onClick={()=>setOpenDialog(true)}>Sign In</Button>}
+              <div>
+                <a href='/'>
+                <Button variant='black' className='cursor-pointer mx-5'>Go to Home</Button>
+                </a>
+              <Button variant='black' onClick={()=>setOpenDialog(true)}>Sign In</Button>
+              </div>
+            }     
         </div>
         <Dialog open={openDialog}>
           <DialogContent className="max-w-sm rounded-2xl p-6 shadow-lg bg-white dark:bg-zinc-900 text-center space-y-4">
